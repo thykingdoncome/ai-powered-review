@@ -1,0 +1,73 @@
+$primary: #c29938;
+
+// import bootstrap
+@import '../node_modules/bootstrap/scss/bootstrap';
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+.loader {
+    display: none;
+}
+
+section {
+    padding: 60px 0;
+}
+
+.input-container {
+    width: 50%;
+}
+
+// Bootstrap Loading Skeleton
+%loading-skeleton {
+    color: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #eee;
+    border-color: #eee;
+
+    &::placeholder {
+        color: transparent;
+    }
+}
+
+@keyframes loading-skeleton {
+    from {
+        opacity: .4;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.loading-skeleton {
+    pointer-events: none;
+    animation: loading-skeleton 1s infinite alternate;
+
+    img {
+        filter: grayscale(100) contrast(0%) brightness(1.8);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    li,
+    .btn,
+    label,
+    .form-control {
+        @extend %loading-skeleton;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .input-container {
+        width: 80%;
+    }
+}
