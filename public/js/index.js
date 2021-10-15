@@ -2,17 +2,13 @@ const submitBtn = document.querySelector("#submit-btn")
 const inputField = document.querySelector("input")
 const reviewSection = document.querySelector("#review-section")
 const loader = document.querySelector("#loader")
+const errorMessage = document.querySelector(".error-message")
+
+const toastLive = document.getElementById("liveToast")
+
 const cardContainer = document.createElement("div")
 
-const reviewObj = {
-  rating: "",
-  body: "I got the box and the dog and the basket and everything in it and I was like ‘Oh my god, I can’t believe I bought this.’",
-  heading: "Long Time Fan of their Work!",
-  customer_name: "Maura Sporer",
-  customer_location: "Lake Clement, CT",
-  date: "2021-05-25T21:03:48Z",
-  customer_image: "https://uploads.fera.ai/img/profile_pics/female_22.png",
-}
+const toast = new bootstrap.Toast(toastLive)
 
 // Filled star icon
 const starFill = `
@@ -29,7 +25,7 @@ const starEmpty = `
 // Ratings component
 const Rating = value => {
   return `
-        <div className='rating'>
+        <div class='rating d-flex align-items-center justify-content-center'>
             <span>
                 ${value >= 1 ? starFill : starEmpty}
             </span>
@@ -63,21 +59,19 @@ const reviewCard = obj => {
   const cardContent = `
   <div class="col-lg-4 col-md-12 mb-lg-0 mb-4">
       <!--Card-->
-      <div class="card testimonial-card">
-        <!--Background color-->
-        <div class="card-up info-color"></div>
+      <div class="card">
         <!--Avatar-->
-        <div class="avatar mx-auto white pt-2">
+        <div class="mx-auto white pt-2">
           <img src="${customer_image}" class="rounded-circle img-fluid" alt="${customer_name}">
         </div>
         <div class="card-body">
-          <!--Name-->
+          <!--Card body top-->
           <p class="fw-bold mb-1">${customer_name}</p>
           <small><em class="text-small mb-4 fa-quote-left">${customer_location}</em></small>
           ${Rating(rating)}
           <hr>
+          <!--Card body bottom-->
           <h6 class="dark-grey-text fw-bold mt-2">${heading}</h6>
-          <!--Quotation-->
           <p class="dark-grey-text fst-italic mt-4">"${body}"</p>
         </div>
       </div>
@@ -93,23 +87,19 @@ const reviewCard = obj => {
 
 // Generate review
 const getReview = async url => {
-  // console.log(url, '-----')
-  // loader.style.display = "block"
-  //  setTimeout(() => {
-  //    reviewCard(reviewObj)
-  //     loader.style.display = "none"
-  //  }, 2000)
+  loader.style.display = "block"
 
-  await fetch(`https://gpt.fera.ai/samples/reviews.json?url=${url}`)
+  await fetch(
+    `https://gpt.fera.ai/samples/reviews.json?url=${url}&api_key=aslkdj9fi3rksfkfkdkdfo32tg`
+  )
     .then(res => res.json())
     .then(data => {
-      console.log(data, "datttaa")
       reviewCard(data)
       loader.style.display = "none"
     })
     .catch(ex => {
       loader.style.display = "none"
-      console.log(ex, "except")
+      toast.show()
       if (cardContainer.parentNode) {
         document.getElementById("card-container").style.display = "none"
       }
@@ -121,7 +111,13 @@ submitBtn.addEventListener("click", function (e) {
   const urlERR = inputField.value
 
   if (urlERR === "") {
-    console.log("put something")
+    inputField.classList.add("error")
+    errorMessage.style.visibility = "visible"
+
+    setTimeout(() => {
+      inputField.classList.remove("error")
+      errorMessage.style.visibility = "hidden"
+    }, 4000)
     return
   }
 
