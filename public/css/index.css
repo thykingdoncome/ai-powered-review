@@ -12023,7 +12023,7 @@ section {
 
 section.header-section {
   background: url("../img/background.png"), #3498db;
-  min-height: 40vh;
+  min-height: 35vh;
 }
 
 .loader {

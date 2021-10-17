@@ -62,7 +62,7 @@ const reviewCard = obj => {
   )
 
   const cardContent = `
-  <div class="col-lg-4 col-md-12 mb-lg-0 mb-4">
+  <div class="col-lg-6 col-md-8 mb-lg-0 mb-4">
       <!--Card-->
       <div class="card">
         <!--Avatar-->
@@ -110,9 +110,9 @@ const getReview = async url => {
   )
     .then(res => res.json())
     .then(data => {
-      const newData = { ...data, id: getPathFromUrl(url), product_url: url }
+      const newReview = { ...data, id: getPathFromUrl(url), product_url: url }
 
-      reviewsArray.unshift(newData)
+      reviewsArray.unshift(newReview)
 
       // remove duplicate/identical reviews of same product
       const removeDuplicates = reviewsArray.filter(
