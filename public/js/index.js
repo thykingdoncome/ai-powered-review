@@ -3,12 +3,11 @@ const inputField = document.querySelector("input")
 const reviewSection = document.querySelector("#review-section")
 const loader = document.querySelector("#loader")
 const errorMessage = document.querySelector(".error-message")
-
 const toastLive = document.getElementById("liveToast")
 
-const cardContainer = document.createElement("div")
-
 const toast = new bootstrap.Toast(toastLive)
+
+let reviewsArray = []
 
 // Filled star icon
 const starFill = `
@@ -45,7 +44,7 @@ const Rating = value => {
     `
 }
 
-// Generate review card
+// Generate review card component
 const reviewCard = obj => {
   let {
     customer_image,
@@ -55,6 +54,12 @@ const reviewCard = obj => {
     customer_name,
     customer_location,
   } = obj
+
+  const cardContainer = document.createElement("div")
+  cardContainer.setAttribute(
+    "class",
+    "d-flex justify-content-center mb-4 card-container"
+  )
 
   const cardContent = `
   <div class="col-lg-4 col-md-12 mb-lg-0 mb-4">
@@ -78,15 +83,26 @@ const reviewCard = obj => {
       <!--Card-->
     </div>
   `
-  cardContainer.setAttribute("class", "d-flex justify-content-center")
-  cardContainer.setAttribute("id", "card-container")
-
   cardContainer.innerHTML = cardContent
-  reviewSection.appendChild(cardContainer)
+  return cardContainer
+}
+
+// Load reviews from storage on window load
+window.onload = () => {
+  const reviews = JSON.parse(localStorage.getItem("reviews"))
+  reviewsArray = reviews ? [...reviews] : []
+}
+
+const getPathFromUrl = url => {
+  const protocolStrip = url.replace(/^https?\:\/\//i, "") // stips protocol from url
+  return protocolStrip.split(/[?#]/)[0] //omit query params if present
 }
 
 // Generate review
 const getReview = async url => {
+  // remove all cards from dom
+  const cardContainers = document.querySelectorAll(".card-container")
+  cardContainers.forEach(card => card.remove())
   loader.style.display = "block"
 
   await fetch(
@@ -94,23 +110,40 @@ const getReview = async url => {
   )
     .then(res => res.json())
     .then(data => {
-      reviewCard(data)
+      const newData = { ...data, id: getPathFromUrl(url), product_url: url }
+
+      reviewsArray.unshift(newData)
+
+      // remove duplicate/identical reviews of same product
+      const removeDuplicates = reviewsArray.filter(
+        (review, idx, arr) =>
+          arr.findIndex(
+            curRev => JSON.stringify(curRev) === JSON.stringify(review)
+          ) === idx
+      )
+
+      localStorage.setItem("reviews", JSON.stringify(removeDuplicates))
+
+      const allReviews = JSON.parse(localStorage.getItem("reviews"))
+      allReviews
+        .filter(review => review.id === getPathFromUrl(url))
+        .forEach(review => {
+          reviewSection.appendChild(reviewCard(review))
+        })
+
       loader.style.display = "none"
     })
     .catch(ex => {
       loader.style.display = "none"
       toast.show()
-      if (cardContainer.parentNode) {
-        document.getElementById("card-container").style.display = "none"
-      }
     })
 }
 
 submitBtn.addEventListener("click", function (e) {
   e.preventDefault()
-  const urlERR = inputField.value
+  const url = inputField.value
 
-  if (urlERR === "") {
+  if (url === "") {
     inputField.classList.add("error")
     errorMessage.style.visibility = "visible"
 
@@ -121,9 +154,5 @@ submitBtn.addEventListener("click", function (e) {
     return
   }
 
-  // check if card container exists on DOM & removes it
-  if (cardContainer.parentNode) {
-    cardContainer.parentNode.removeChild(cardContainer)
-  }
-  getReview(urlERR)
+  getReview(url)
 })
