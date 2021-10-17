@@ -12023,7 +12023,7 @@ section {
 
 section.header-section {
   background: url("../img/background.png"), #3498db;
-  min-height: 40vh;
+  min-height: 35vh;
 }
 
 .loader {
@@ -12046,6 +12046,5 @@ section.header-section {
 
 .error-message {
   visibility: hidden;
-  color: red;
 }
 /*# sourceMappingURL=index.css.map */
