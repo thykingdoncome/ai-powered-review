@@ -3,8 +3,8 @@
     color: transparent;
     appearance: none;
     -webkit-appearance: none;
-    background-color: #eee;
-    border-color: #eee;
+    background-color: $skeleton-color;
+    border-color: $skeleton-color;
 
     &::placeholder {
         color: transparent;
