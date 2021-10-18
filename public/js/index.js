@@ -49,14 +49,15 @@ const ratingCompoent = value => {
 const generateOption = value => {
   const $option = document.createElement("option");
   $option.setAttribute("value", value);
+  $option.setAttribute("class", "review-list-item");
 
   $option.innerText = value;
   return $option;
 };
 
 const generateListItem = (value, count) => {
-  const li = document.createElement("li");
-  li.setAttribute(
+  const $li = document.createElement("li");
+  $li.setAttribute(
     "class",
     "d-flex align-items-center review-list-item mb-2 text-underline"
   );
@@ -68,20 +69,21 @@ const generateListItem = (value, count) => {
                 <span>(${count})</span>
   `;
 
-  li.innerHTML = listItemContent;
+  $li.innerHTML = listItemContent;
 
-  li.addEventListener("click", e => {
+  $li.addEventListener("click", e => {
     const $cardContainers = document.querySelectorAll(".card-container");
     $cardContainers.forEach(card => card.remove());
 
     $inputField.value = value;
     $select.value = value;
 
-    for (let review in reviewsObject[value]) {
-      $reviewSection.appendChild(reviewCard(reviewsObject[value][review]));
+    const reviews = reviewsObject[value];
+    for (let review in reviews) {
+      $reviewSection.appendChild(reviewCard(reviews[review]));
     }
   });
-  return li;
+  return $li;
 };
 
 // Generate review card component
@@ -176,6 +178,16 @@ const getReview = async url => {
       for (let reviewId in productReviews) {
         const review = productReviews[reviewId];
         $reviewSection.appendChild(reviewCard(review));
+      }
+
+      // Update Review History
+      const $listItems = document.querySelectorAll(".review-list-item");
+      $listItems.forEach(item => item.remove());
+
+      for (let review in reviewsObject) {
+        const reviewCount = Object.keys(reviewsObject[review]).length;
+        $select.appendChild(generateOption(review));
+        $reviewList.appendChild(generateListItem(review, reviewCount));
       }
 
       $loader.style.display = "none";
