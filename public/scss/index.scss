@@ -1,17 +1,10 @@
-$primary: #3498db;
-$secondary: #fff;
-
-// import bootstrap
-@import '../../node_modules/bootstrap/scss/bootstrap';
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-
+@import "variables";
 @import "reusables";
 @import "skeleton";
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: #f6f8f9;
+    background: $light-grey;
 }
 
 // sections
@@ -19,7 +12,7 @@ section {
     padding: 60px 0;
 
     &.header-section {
-        background: url('../img/background.png'), #3498db;
+        background: url('../img/background.png'), $primary-color;
         min-height: 35vh;
     }
 }
@@ -31,21 +24,22 @@ section {
 
 // ==========
 
-.input-container {
-    width: 50%;
-
-    @include mobile-tablet {
-        width: 80%;
-    }
+.review-list-item {
+    cursor: pointer;
+    text-decoration: underline;
+    list-style: none;
+    width: fit-content;
 }
 
-// handle error state
+// error state
+
 .error {
-    border-color: red;
+    border-color: $error-color;
 }
 
 .error-message {
     visibility: hidden;
+    color: $error-color;
 }
 
 // ===========
