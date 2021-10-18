@@ -93,7 +93,7 @@ const reviewCard = review => {
     body,
     heading,
     customer_name: customerName,
-    customer_image: customerInage,
+    customer_image: customerImage,
     customer_location: customerLocation,
   } = review;
 
@@ -106,7 +106,7 @@ const reviewCard = review => {
       <div class="card ml-2">
         <!--Avatar-->
         <div class="mx-auto white pt-2">
-          <img src="${customerInage}" class="rounded-circle img-fluid" alt="${customerName}">
+          <img src="${customerImage}" class="rounded-circle img-fluid" alt="${customerName}">
         </div>
         <div class="card-body">
           <!--Card body top-->
